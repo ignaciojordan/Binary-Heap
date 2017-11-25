@@ -1,6 +1,7 @@
 #include "heap.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #define INICIAL 17
 #define REDIM 2
 
@@ -143,19 +144,20 @@ void heap_destruir(heap_t *heap, void destruir_elemento(void *e)){
 
 heap_t *heap_crear_arr(void*vector[], size_t n, cmp_func_t cmp){
 	heap_t *heap = malloc(sizeof(heap_t));
-	if (heap == NULL){
+	if (!heap){
 		return NULL;
 	}
-	heapify(vector, cmp, n);
-	heap->arreglo = vector;
-	if (heap->arreglo == NULL) {
+	void** vect = malloc(n * sizeof(void*));
+	if (!vect) {
 		free(heap);
 		return NULL;
 	}	
+	memcpy(vect, vector, n * sizeof(void*));
+	heapify(vect, cmp, n);
+	heap->arreglo = vect;
 	heap->cmp = cmp;
 	heap->cantidad = n;
 	heap->tamanio = n;
-	heap->arreglo = vector;
 	return heap;
 }
 
